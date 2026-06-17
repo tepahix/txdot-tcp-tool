@@ -10,11 +10,11 @@ function(){
 
     if(this.checked){
         tcpImage.src =
-        "images/1-2b/1-2b-rumble.png";
+        "Images/1-2b/1-2b-rumble.png";
     }
     else{
         tcpImage.src =
-        "images/1-2b/1-2b-no-rumble.png";
+        "Images/1-2b/1-2b-no-rumble.png";
     }
 
 });
