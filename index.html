@@ -1,40 +1,73 @@
-<!-- Controls Section -->
-<div class="controls">
+<!DOCTYPE html>
+<html lang="en">
 
-    <label>
-        Traffic Control Plan:
-        <select id="tcpSelect">
-            <option value="1-2b" selected>1-2b</option>
-            <option value="1-1a">1-1a</option>
-            <option value="1-4a">1-4a</option>
-        </select>
-    </label>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCP Tool</title>
 
-    <label>
-        Speed Limit:
-        <select id="speed">
-            <option value="30">30 MPH</option>
-            <option value="35">35 MPH</option>
-            <option value="40">40 MPH</option>
-            <option value="45">45 MPH</option>
-            <option value="50">50 MPH</option>
-            <option value="55">55 MPH</option>
-            <option value="60">60 MPH</option>
-            <option value="65">65 MPH</option>
-            <option value="70">70 MPH</option>
-            <option value="75">75 MPH</option>
-        </select>
-    </label>
+    <link rel="stylesheet" href="style.css">
+</head>
 
-    <label>
-        <input type="checkbox" id="rumble">
-        Include Rumble Strips
-    </label>
+<body>
 
-    <!-- 🔥 NEW: Edit Mode -->
-    <label>
-        <input type="checkbox" id="editMode">
-        Edit Layout Mode
-    </label>
+    <h1>TCP Tool</h1>
 
-</div>
+    <!-- Controls Section -->
+    <div class="controls">
+
+        <label>
+            Traffic Control Plan:
+            <select id="tcpSelect">
+                <option value="1-2b" selected>1-2b</option>
+                <option value="1-1a">1-1a</option>
+                <option value="1-4a">1-4a</option>
+            </select>
+        </label>
+
+        <label>
+            Speed Limit:
+            <select id="speed">
+                <option value="30">30 MPH</option>
+                <option value="35">35 MPH</option>
+                <option value="40">40 MPH</option>
+                <option value="45">45 MPH</option>
+                <option value="50">50 MPH</option>
+                <option value="55">55 MPH</option>
+                <option value="60">60 MPH</option>
+                <option value="65">65 MPH</option>
+                <option value="70">70 MPH</option>
+                <option value="75">75 MPH</option>
+            </select>
+        </label>
+
+        <label>
+            <input type="checkbox" id="rumble">
+            Include Rumble Strips
+        </label>
+
+        <label>
+            <input type="checkbox" id="editMode">
+            Edit Layout Mode
+        </label>
+
+    </div>
+
+    <!-- IMAGE + LABEL LAYER -->
+    <div class="image-container">
+
+        <img
+            id="tcpImage"
+            src="Images/1-2b/1-2b-no-rumble.png"
+            alt="TCP">
+
+        <div id="labelLayer"></div>
+
+    </div>
+
+    <!-- 🔥 THIS WAS MISSING (CRITICAL FIX) -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
