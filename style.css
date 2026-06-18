@@ -1,8 +1,8 @@
-
 .image-container {
     width: 100%;
-    max-width: 1000px;   /* prevents it from becoming huge on big screens */
-    margin: 0 auto;      /* centers it */
+    max-width: 900px;   /* controls desktop size */
+    margin: 0 auto;     /* centers it */
+    padding: 10px;
 }
 
 .image-container img {
