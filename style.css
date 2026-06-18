@@ -1,28 +1,11 @@
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-}
-
-h1 {
-    text-align: center;
-}
-
-label, select, input {
-    display: block;
-    margin: 10px auto;
-    text-align: center;
-}
-
 .image-container {
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+    width: 100%;
+    max-width: 1000px;   /* prevents it from becoming huge on big screens */
+    margin: 0 auto;      /* centers it */
 }
 
 .image-container img {
     width: 100%;
-    max-width: 800px;   /* THIS is what controls desktop size */
     height: auto;
     display: block;
 }
