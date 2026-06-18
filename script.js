@@ -1,9 +1,17 @@
+console.log("TCP TOOL LOADING");
+
 const tcpSelect = document.getElementById("tcpSelect");
 const rumbleCheckbox = document.getElementById("rumble");
 const tcpImage = document.getElementById("tcpImage");
-const labelLayer = document.getElementById("labelLayer");
 const speedSelect = document.getElementById("speed");
 const editMode = document.getElementById("editMode");
+
+const labelLayer = document.getElementById("labelLayer");
+
+// 🔥 HARD SAFETY CHECK
+if (!tcpImage) {
+    console.error("Image element missing");
+}
 
 let currentTCP = "1-2b";
 
@@ -11,97 +19,91 @@ let tcpData = {};
 let layoutData = {};
 
 // -----------------------------
-// SAFE LOAD (NO CRASH VERSION)
+// IMAGE (ALWAYS SAFE)
+// -----------------------------
+
+function updateImage() {
+    const rumble = rumbleCheckbox?.checked;
+
+    const path = `Images/${currentTCP}/${currentTCP}-${rumble ? "rumble" : "no-rumble"}.png`;
+
+    console.log("Image path:", path);
+
+    tcpImage.src = path;
+}
+
+// -----------------------------
+// DATA LOADING (SAFE)
 // -----------------------------
 
 async function loadTCPData() {
     try {
         const res = await fetch(`data/${currentTCP}.json`);
         tcpData = await res.json();
-    } catch (err) {
-        console.error("TCP data failed:", err);
+    } catch (e) {
+        console.warn("TCP data failed");
         tcpData = {};
     }
 }
 
 async function loadLayoutData() {
-    const rumble = rumbleCheckbox.checked ? "rumble" : "no-rumble";
+    const rumble = rumbleCheckbox?.checked ? "rumble" : "no-rumble";
 
     try {
         const res = await fetch(`data/${currentTCP}-${rumble}-layout.json`);
         layoutData = await res.json();
-    } catch (err) {
-        console.error("Layout data failed:", err);
+    } catch (e) {
+        console.warn("Layout data failed");
         layoutData = {};
     }
 }
 
 // -----------------------------
-// IMAGE (FORCED SAFE)
-// -----------------------------
-
-function updateImage() {
-    const rumble = rumbleCheckbox.checked;
-
-    tcpImage.src =
-        `Images/${currentTCP}/${currentTCP}-${rumble ? "rumble" : "no-rumble"}.png`;
-}
-
-// -----------------------------
-// LABELS (SAFE RENDER)
+// LABELS (SAFE GUARDED)
 // -----------------------------
 
 function clearLabels() {
+    if (!labelLayer) return;
     labelLayer.innerHTML = "";
 }
 
 function renderLabels() {
+    if (!labelLayer) return;
+
     clearLabels();
 
-    const speed = speedSelect.value;
-    const data = tcpData[speed];
+    const speed = speedSelect?.value;
+    const data = tcpData?.[speed];
 
     if (!data || !layoutData) return;
 
     if (Array.isArray(data.X) && Array.isArray(layoutData.X)) {
-        data.X.forEach((value, index) => {
-            const pos = layoutData.X[index];
+        data.X.forEach((value, i) => {
+            const pos = layoutData.X[i];
             if (!pos) return;
 
-            createDraggableLabel("X", value, pos, index);
+            createLabel("X", value, pos);
         });
     }
 
-    if (data.B && layoutData.B) {
-        createDraggableLabel("B", data.B, layoutData.B);
-    }
+    if (data.B && layoutData.B) createLabel("B", data.B, layoutData.B);
+    if (data.C && layoutData.C) createLabel("C", data.C, layoutData.C);
+    if (data.R && layoutData.R) createLabel("R", data.R, layoutData.R);
+}
 
-    if (data.C && layoutData.C) {
-        createDraggableLabel("C", data.C, layoutData.C);
-    }
+function createLabel(type, value, pos) {
+    const el = document.createElement("div");
+    el.className = "label";
+    el.innerText = `${type}: ${value}`;
 
-    if (data.R && layoutData.R) {
-        createDraggableLabel("R", data.R, layoutData.R);
-    }
+    el.style.left = pos.x + "%";
+    el.style.top = pos.y + "%";
+
+    labelLayer.appendChild(el);
 }
 
 // -----------------------------
-// SIMPLE LABEL (NO DRAG YET)
-// -----------------------------
-
-function createDraggableLabel(type, value, pos) {
-    const label = document.createElement("div");
-    label.className = "label";
-    label.innerText = `${type}: ${value}`;
-
-    label.style.left = pos.x + "%";
-    label.style.top = pos.y + "%";
-
-    labelLayer.appendChild(label);
-}
-
-// -----------------------------
-// UPDATE
+// MASTER UPDATE
 // -----------------------------
 
 function updateAll() {
@@ -113,7 +115,7 @@ function updateAll() {
 // EVENTS
 // -----------------------------
 
-tcpSelect.addEventListener("change", async function () {
+tcpSelect?.addEventListener("change", async function () {
     currentTCP = this.value;
 
     await loadTCPData();
@@ -122,23 +124,28 @@ tcpSelect.addEventListener("change", async function () {
     updateAll();
 });
 
-speedSelect.addEventListener("change", updateAll);
+speedSelect?.addEventListener("change", updateAll);
 
-rumbleCheckbox.addEventListener("change", async function () {
+rumbleCheckbox?.addEventListener("change", async function () {
     await loadLayoutData();
     updateAll();
 });
 
-editMode.addEventListener("change", updateAll);
-
 // -----------------------------
-// INIT
+// INIT (CRITICAL ORDER)
 // -----------------------------
 
 async function init() {
+    console.log("INIT START");
+
+    updateImage(); // ALWAYS FIRST
+
     await loadTCPData();
     await loadLayoutData();
-    updateAll();
+
+    renderLabels();
+
+    console.log("INIT COMPLETE");
 }
 
 init();
