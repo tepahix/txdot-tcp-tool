@@ -20,11 +20,11 @@ h1 {
     margin: 0 10px 15px 10px;
 }
 
-/* 🔥 IMPORTANT: this becomes the positioning parent */
+/* 🔥 FIXED: container must shrink-wrap image correctly */
 .image-container {
-    position: relative; /* CRITICAL FIX */
-    width: 100%;
-    display: inline-block;
+    position: relative; /* CRITICAL */
+    width: fit-content; /* 🔥 FIX #1 */
+    max-width: 100%;    /* prevents overflow */
     margin: 0 10px;
 }
 
@@ -40,7 +40,7 @@ h1 {
     background: #ffffff;
 }
 
-/* 🔥 LABEL LAYER MUST COVER IMAGE */
+/* Label layer */
 #labelLayer {
     position: absolute;
     top: 0;
