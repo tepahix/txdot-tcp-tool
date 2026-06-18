@@ -1,71 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
+<!-- Controls Section -->
+<div class="controls">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCP Tool</title>
+    <label>
+        Traffic Control Plan:
+        <select id="tcpSelect">
+            <option value="1-2b" selected>1-2b</option>
+            <option value="1-1a">1-1a</option>
+            <option value="1-4a">1-4a</option>
+        </select>
+    </label>
 
-    <link rel="stylesheet" href="style.css">
-</head>
+    <label>
+        Speed Limit:
+        <select id="speed">
+            <option value="30">30 MPH</option>
+            <option value="35">35 MPH</option>
+            <option value="40">40 MPH</option>
+            <option value="45">45 MPH</option>
+            <option value="50">50 MPH</option>
+            <option value="55">55 MPH</option>
+            <option value="60">60 MPH</option>
+            <option value="65">65 MPH</option>
+            <option value="70">70 MPH</option>
+            <option value="75">75 MPH</option>
+        </select>
+    </label>
 
-<body>
+    <label>
+        <input type="checkbox" id="rumble">
+        Include Rumble Strips
+    </label>
 
-    <h1>TCP Tool</h1>
+    <!-- 🔥 NEW: Edit Mode -->
+    <label>
+        <input type="checkbox" id="editMode">
+        Edit Layout Mode
+    </label>
 
-    <!-- Controls Section -->
-    <div class="controls">
-
-        <!-- TCP Selection -->
-        <label>
-            Traffic Control Plan:
-            <select id="tcpSelect">
-                <option value="1-2b" selected>1-2b</option>
-                <option value="1-1a">1-1a</option>
-                <option value="1-4a">1-4a</option>
-            </select>
-        </label>
-
-        <!-- Speed Selection -->
-        <label>
-            Speed Limit:
-            <select id="speed">
-                <option value="30">30 MPH</option>
-                <option value="35">35 MPH</option>
-                <option value="40">40 MPH</option>
-                <option value="45">45 MPH</option>
-                <option value="50">50 MPH</option>
-                <option value="55">55 MPH</option>
-                <option value="60">60 MPH</option>
-                <option value="65">65 MPH</option>
-                <option value="70">70 MPH</option>
-                <option value="75">75 MPH</option>
-            </select>
-        </label>
-
-        <!-- Rumble Strip Option -->
-        <label>
-            <input type="checkbox" id="rumble">
-            Include Rumble Strips
-        </label>
-
-    </div>
-
-    <!-- TCP Drawing Container -->
-    <div class="image-container">
-
-        <img
-            id="tcpImage"
-            src="Images/1-2b/1-2b-no-rumble.png"
-            alt="Traffic Control Plan">
-
-        <!-- 🔥 NEW: Label overlay layer -->
-        <div id="labelLayer"></div>
-
-    </div>
-
-    <script src="script.js"></script>
-
-</body>
-
-</html>
+</div>
