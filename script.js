@@ -11,22 +11,33 @@ let tcpData = {};
 let layoutData = {};
 
 // -----------------------------
-// LOAD DATA
+// SAFE LOAD (NO CRASH VERSION)
 // -----------------------------
 
 async function loadTCPData() {
-    const res = await fetch(`data/${currentTCP}.json`);
-    tcpData = await res.json();
+    try {
+        const res = await fetch(`data/${currentTCP}.json`);
+        tcpData = await res.json();
+    } catch (err) {
+        console.error("TCP data failed:", err);
+        tcpData = {};
+    }
 }
 
 async function loadLayoutData() {
     const rumble = rumbleCheckbox.checked ? "rumble" : "no-rumble";
-    const res = await fetch(`data/${currentTCP}-${rumble}-layout.json`);
-    layoutData = await res.json();
+
+    try {
+        const res = await fetch(`data/${currentTCP}-${rumble}-layout.json`);
+        layoutData = await res.json();
+    } catch (err) {
+        console.error("Layout data failed:", err);
+        layoutData = {};
+    }
 }
 
 // -----------------------------
-// IMAGE
+// IMAGE (FORCED SAFE)
 // -----------------------------
 
 function updateImage() {
@@ -37,16 +48,12 @@ function updateImage() {
 }
 
 // -----------------------------
-// CLEAR
+// LABELS (SAFE RENDER)
 // -----------------------------
 
 function clearLabels() {
     labelLayer.innerHTML = "";
 }
-
-// -----------------------------
-// RENDER LABELS
-// -----------------------------
 
 function renderLabels() {
     clearLabels();
@@ -56,7 +63,6 @@ function renderLabels() {
 
     if (!data || !layoutData) return;
 
-    // X array
     if (Array.isArray(data.X) && Array.isArray(layoutData.X)) {
         data.X.forEach((value, index) => {
             const pos = layoutData.X[index];
@@ -66,7 +72,6 @@ function renderLabels() {
         });
     }
 
-    // single labels
     if (data.B && layoutData.B) {
         createDraggableLabel("B", data.B, layoutData.B);
     }
@@ -81,63 +86,22 @@ function renderLabels() {
 }
 
 // -----------------------------
-// DRAG LABEL CORE
+// SIMPLE LABEL (NO DRAG YET)
 // -----------------------------
 
-function createDraggableLabel(type, value, pos, index = null) {
+function createDraggableLabel(type, value, pos) {
     const label = document.createElement("div");
     label.className = "label";
     label.innerText = `${type}: ${value}`;
 
-    // initial position (percent-based)
     label.style.left = pos.x + "%";
     label.style.top = pos.y + "%";
 
     labelLayer.appendChild(label);
-
-    let isDragging = false;
-
-    label.addEventListener("mousedown", (e) => {
-        if (!editMode.checked) return;
-
-        isDragging = true;
-
-        const container = labelLayer.getBoundingClientRect();
-
-        function onMove(eMove) {
-            if (!isDragging) return;
-
-            const x = ((eMove.clientX - container.left) / container.width) * 100;
-            const y = ((eMove.clientY - container.top) / container.height) * 100;
-
-            // clamp inside image bounds
-            const clampedX = Math.max(0, Math.min(100, x));
-            const clampedY = Math.max(0, Math.min(100, y));
-
-            label.style.left = clampedX + "%";
-            label.style.top = clampedY + "%";
-
-            // update memory (live editing)
-            if (type === "X") {
-                layoutData.X[index] = { x: clampedX, y: clampedY };
-            } else {
-                layoutData[type] = { x: clampedX, y: clampedY };
-            }
-        }
-
-        function onUp() {
-            isDragging = false;
-            document.removeEventListener("mousemove", onMove);
-            document.removeEventListener("mouseup", onUp);
-        }
-
-        document.addEventListener("mousemove", onMove);
-        document.addEventListener("mouseup", onUp);
-    });
 }
 
 // -----------------------------
-// MASTER UPDATE
+// UPDATE
 // -----------------------------
 
 function updateAll() {
