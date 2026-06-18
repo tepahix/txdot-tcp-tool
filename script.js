@@ -5,13 +5,7 @@ const rumbleCheckbox = document.getElementById("rumble");
 const tcpImage = document.getElementById("tcpImage");
 const speedSelect = document.getElementById("speed");
 const editMode = document.getElementById("editMode");
-
 const labelLayer = document.getElementById("labelLayer");
-
-// 🔥 HARD SAFETY CHECK
-if (!tcpImage) {
-    console.error("Image element missing");
-}
 
 let currentTCP = "1-2b";
 
@@ -29,11 +23,13 @@ function updateImage() {
 
     console.log("Image path:", path);
 
-    tcpImage.src = path;
+    if (tcpImage) {
+        tcpImage.src = path;
+    }
 }
 
 // -----------------------------
-// DATA LOADING (SAFE)
+// DATA LOADING
 // -----------------------------
 
 async function loadTCPData() {
@@ -41,7 +37,7 @@ async function loadTCPData() {
         const res = await fetch(`data/${currentTCP}.json`);
         tcpData = await res.json();
     } catch (e) {
-        console.warn("TCP data failed");
+        console.warn("TCP data failed", e);
         tcpData = {};
     }
 }
@@ -53,19 +49,43 @@ async function loadLayoutData() {
         const res = await fetch(`data/${currentTCP}-${rumble}-layout.json`);
         layoutData = await res.json();
     } catch (e) {
-        console.warn("Layout data failed");
+        console.warn("Layout data failed", e);
         layoutData = {};
     }
 }
 
 // -----------------------------
-// LABELS (SAFE GUARDED)
+// LABELS
 // -----------------------------
 
 function clearLabels() {
-    if (!labelLayer) return;
-    labelLayer.innerHTML = "";
+    if (labelLayer) labelLayer.innerHTML = "";
 }
+
+// -----------------------------
+// SAFE X PARSER (FIXED)
+// -----------------------------
+
+function normalizeX(dataX) {
+    // CASE 1: already array
+    if (Array.isArray(dataX)) return dataX;
+
+    // CASE 2: object like {0:10,1:20}
+    if (dataX && typeof dataX === "object") {
+        return Object.keys(dataX)
+            .sort((a, b) => a - b)
+            .map(k => dataX[k]);
+    }
+
+    // CASE 3: single value
+    if (typeof dataX === "number") return [dataX];
+
+    return [];
+}
+
+// -----------------------------
+// RENDER
+// -----------------------------
 
 function renderLabels() {
     if (!labelLayer) return;
@@ -78,54 +98,45 @@ function renderLabels() {
     if (!data || !layoutData) return;
 
     // -----------------------------
-    // X LABEL FIX (UPDATED)
+    // X (FIXED + FLEXIBLE)
     // -----------------------------
 
-const speed = speedSelect?.value;
-const data = tcpData?.[speed];
+    const Xdata = normalizeX(data?.X);
+    const Xlayout = Array.isArray(layoutData?.X) ? layoutData.X : [];
 
-const Xdata = data?.X;
-const Xlayout = layoutData?.X;
+    console.log("X DEBUG:", { Xdata, Xlayout });
 
-console.log("X DEBUG RAW:", { Xdata, Xlayout });
+    const xCount = Math.min(Xdata.length, Xlayout.length);
 
-if (Array.isArray(Xdata) && Array.isArray(Xlayout)) {
-
-    const count = Math.min(Xdata.length, Xlayout.length);
-
-    if (count === 0) {
-        console.warn("X arrays exist but are empty");
-    }
-
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < xCount; i++) {
         const value = Xdata[i];
         const pos = Xlayout[i];
 
-        if (!pos) {
-            console.warn("Missing X layout at index", i);
-            continue;
-        }
+        if (!pos) continue;
 
         createLabel("X", value, pos);
     }
-
-} else {
-    console.warn("❌ X is not in expected format", {
-        Xdata,
-        Xlayout,
-        typeData: typeof Xdata,
-        typeLayout: typeof Xlayout
-    });
-}
 
     // -----------------------------
     // SINGLE LABELS
     // -----------------------------
 
-    if (data.B && layoutData.B) createLabel("B", data.B, layoutData.B);
-    if (data.C && layoutData.C) createLabel("C", data.C, layoutData.C);
-    if (data.R && layoutData.R) createLabel("R", data.R, layoutData.R);
+    if (data?.B && layoutData?.B) {
+        createLabel("B", data.B, layoutData.B);
+    }
+
+    if (data?.C && layoutData?.C) {
+        createLabel("C", data.C, layoutData.C);
+    }
+
+    if (data?.R && layoutData?.R) {
+        createLabel("R", data.R, layoutData.R);
+    }
 }
+
+// -----------------------------
+// LABEL CREATION
+// -----------------------------
 
 function createLabel(type, value, pos) {
     const el = document.createElement("div");
@@ -139,7 +150,7 @@ function createLabel(type, value, pos) {
 }
 
 // -----------------------------
-// MASTER UPDATE
+// UPDATE
 // -----------------------------
 
 function updateAll() {
