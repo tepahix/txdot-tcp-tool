@@ -4,11 +4,20 @@ const tcpImage = document.getElementById("tcpImage");
 const labelLayer = document.getElementById("labelLayer");
 const speedSelect = document.getElementById("speed");
 
-// Current state
 let currentTCP = "1-2b";
+let tcpData = {};
 
 // -----------------------------
-// IMAGE SYSTEM (UNCHANGED LOGIC)
+// LOAD TCP DATA (JSON)
+// -----------------------------
+
+async function loadTCPData() {
+    const response = await fetch(`data/${currentTCP}.json`);
+    tcpData = await response.json();
+}
+
+// -----------------------------
+// IMAGE UPDATE
 // -----------------------------
 
 function updateImage() {
@@ -21,24 +30,14 @@ function updateImage() {
 }
 
 // -----------------------------
-// LABEL SYSTEM (NEW)
+// LABEL SYSTEM
 // -----------------------------
 
 function clearLabels() {
     labelLayer.innerHTML = "";
 }
 
-// Temporary demo data (we will replace with JSON later)
-function getDemoLabels() {
-    return {
-        X: "500'",
-        B: "200'",
-        C: "750'",
-        R: "50'"
-    };
-}
-
-// Position map (temporary fixed test positions)
+// Positions (TEMP - we will refine per TCP later)
 function getLabelPositions() {
     return {
         X: { x: 30, y: 25 },
@@ -48,17 +47,21 @@ function getLabelPositions() {
     };
 }
 
-// Render labels on image
 function renderLabels() {
     clearLabels();
 
-    const values = getDemoLabels();
+    const speed = speedSelect.value;
+    const data = tcpData[speed];
+
+    if (!data) return;
+
     const positions = getLabelPositions();
 
-    Object.keys(values).forEach(key => {
+    Object.keys(data).forEach(key => {
         const label = document.createElement("div");
         label.className = "label";
-        label.innerText = `${key}: ${values[key]}`;
+
+        label.innerText = `${key}: ${data[key]}`;
 
         label.style.left = positions[key].x + "%";
         label.style.top = positions[key].y + "%";
@@ -68,7 +71,7 @@ function renderLabels() {
 }
 
 // -----------------------------
-// UPDATE EVERYTHING TOGETHER
+// MASTER UPDATE FUNCTION
 // -----------------------------
 
 function updateAll() {
@@ -80,12 +83,9 @@ function updateAll() {
 // EVENTS
 // -----------------------------
 
-tcpSelect.addEventListener("change", function () {
+tcpSelect.addEventListener("change", async function () {
     currentTCP = this.value;
-    updateAll();
-});
-
-rumbleCheckbox.addEventListener("change", function () {
+    await loadTCPData();
     updateAll();
 });
 
@@ -93,8 +93,17 @@ speedSelect.addEventListener("change", function () {
     updateAll();
 });
 
+rumbleCheckbox.addEventListener("change", function () {
+    updateAll();
+});
+
 // -----------------------------
-// INITIAL LOAD
+// INIT
 // -----------------------------
 
-updateAll();
+async function init() {
+    await loadTCPData();
+    updateAll();
+}
+
+init();
