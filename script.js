@@ -1,20 +1,30 @@
-const rumbleCheckbox =
-document.getElementById("rumble");
+const tcpSelect = document.getElementById("tcpSelect");
+const rumbleCheckbox = document.getElementById("rumble");
+const tcpImage = document.getElementById("tcpImage");
 
-const tcpImage =
-document.getElementById("tcpImage");
+// Current state
+let currentTCP = "1-2b";
 
-rumbleCheckbox.addEventListener(
-"change",
-function(){
+// Build image path based on state
+function updateImage() {
+    const rumble = rumbleCheckbox.checked;
 
-    if(this.checked){
-        tcpImage.src =
-        "Images/1-2b/1-2b-rumble.png";
-    }
-    else{
-        tcpImage.src =
-        "Images/1-2b/1-2b-no-rumble.png";
-    }
+    const imagePath =
+        `Images/${currentTCP}/${currentTCP}-${rumble ? "rumble" : "no-rumble"}.png`;
 
+    tcpImage.src = imagePath;
+}
+
+// When TCP dropdown changes
+tcpSelect.addEventListener("change", function () {
+    currentTCP = this.value;
+    updateImage();
 });
+
+// When rumble checkbox changes
+rumbleCheckbox.addEventListener("change", function () {
+    updateImage();
+});
+
+// Initial load
+updateImage();
