@@ -11,7 +11,7 @@ h1 {
     margin: 10px 0 15px 10px;
 }
 
-/* Controls section (makes everything compact, not stacked too tall) */
+/* Controls section */
 .controls {
     display: flex;
     flex-wrap: wrap;
@@ -20,17 +20,21 @@ h1 {
     margin: 0 10px 15px 10px;
 }
 
-/* Each control stays inline instead of stacking */
 .controls label {
     margin: 0;
 }
 
-/* Image area */
+/* -----------------------------
+   IMAGE + OVERLAY SYSTEM (IMPORTANT)
+----------------------------- */
+
 .image-container {
     width: 100%;
     display: flex;
-    justify-content: flex-start; /* not centered anymore */
+    justify-content: flex-start;
     margin: 0 10px;
+
+    position: relative; /* 🔥 REQUIRED for label overlay */
 }
 
 /* TCP image */
@@ -43,6 +47,34 @@ h1 {
     background: white;
 }
 
+/* -----------------------------
+   LABEL OVERLAY LAYER
+----------------------------- */
+
+#labelLayer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none; /* prevents blocking clicks */
+}
+
+/* Individual labels */
+.label {
+    position: absolute;
+    font-size: 14px;
+    font-weight: bold;
+    color: #d10000;
+
+    background: rgba(255, 255, 255, 0.75);
+    padding: 2px 4px;
+    border-radius: 3px;
+
+    white-space: nowrap;
+}
+
 /* Mobile tweak */
 @media (max-width: 600px) {
     .controls {
@@ -52,5 +84,9 @@ h1 {
 
     .image-container img {
         max-width: 100%;
+    }
+
+    .label {
+        font-size: 12px;
     }
 }
