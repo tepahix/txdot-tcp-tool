@@ -1,1 +1,12 @@
 
+.image-container {
+    width: 100%;
+    max-width: 1000px;   /* prevents it from becoming huge on big screens */
+    margin: 0 auto;      /* centers it */
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
