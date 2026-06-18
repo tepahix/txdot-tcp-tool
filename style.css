@@ -1,11 +1,84 @@
-.image-container {
-    width: 100%;
-    max-width: 1000px;   /* prevents it from becoming huge on big screens */
-    margin: 0 auto;      /* centers it */
+/* --------------------
+   Base Layout
+---------------------*/
+
+body {
+    margin: 0;
+    padding: 10px;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
 }
 
+h1 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+/* --------------------
+   Controls Layout
+---------------------*/
+
+label {
+    display: block;
+    margin: 8px 0 4px;
+    text-align: center;
+}
+
+select, input {
+    display: block;
+    margin: 0 auto 10px;
+}
+
+/* --------------------
+   Image Container
+   (CORE of your system)
+---------------------*/
+
+.image-container {
+    width: 100%;
+    max-width: 1000px;   /* keeps “sheet” size reasonable on desktop */
+    margin: 20px auto;   /* centers the TCP sheet */
+    position: relative;   /* IMPORTANT: required for future overlays */
+}
+
+/* TCP Image */
 .image-container img {
     width: 100%;
     height: auto;
     display: block;
+}
+
+/* --------------------
+   FUTURE OVERLAY LAYER
+   (labels will go here later)
+---------------------*/
+
+.label {
+    position: absolute;
+    font-size: 14px;
+    font-weight: bold;
+    color: red;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 2px 4px;
+    border-radius: 3px;
+    pointer-events: none; /* prevents blocking clicks */
+}
+
+/* Example positions (we'll replace with dynamic JS later)
+.label-a { top: 20%; left: 30%; }
+.label-b { top: 40%; left: 60%; }
+*/
+
+/* --------------------
+   Mobile Optimization
+---------------------*/
+
+@media (max-width: 600px) {
+    .image-container {
+        max-width: 100%;
+    }
+
+    .label {
+        font-size: 12px;
+    }
 }
