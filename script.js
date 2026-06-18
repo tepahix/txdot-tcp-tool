@@ -81,32 +81,42 @@ function renderLabels() {
     // X LABEL FIX (UPDATED)
     // -----------------------------
 
-    if (Array.isArray(data.X) && Array.isArray(layoutData.X)) {
+const speed = speedSelect?.value;
+const data = tcpData?.[speed];
 
-        const count = Math.min(data.X.length, layoutData.X.length);
+const Xdata = data?.X;
+const Xlayout = layoutData?.X;
 
-        for (let i = 0; i < count; i++) {
+console.log("X DEBUG RAW:", { Xdata, Xlayout });
 
-            const value = data.X[i];
-            const pos = layoutData.X[i];
+if (Array.isArray(Xdata) && Array.isArray(Xlayout)) {
 
-            if (!pos) continue;
+    const count = Math.min(Xdata.length, Xlayout.length);
 
-            createLabel("X", value, pos);
-        }
-
-        // 🔥 DEBUG WARNING IF MISMATCH
-        if (data.X.length !== layoutData.X.length) {
-            console.warn(
-                `X mismatch in ${currentTCP} @ speed ${speed}`,
-                "data.X:", data.X.length,
-                "layout.X:", layoutData.X.length
-            );
-        }
-
-    } else {
-        console.warn("X not valid format:", data.X, layoutData.X);
+    if (count === 0) {
+        console.warn("X arrays exist but are empty");
     }
+
+    for (let i = 0; i < count; i++) {
+        const value = Xdata[i];
+        const pos = Xlayout[i];
+
+        if (!pos) {
+            console.warn("Missing X layout at index", i);
+            continue;
+        }
+
+        createLabel("X", value, pos);
+    }
+
+} else {
+    console.warn("❌ X is not in expected format", {
+        Xdata,
+        Xlayout,
+        typeData: typeof Xdata,
+        typeLayout: typeof Xlayout
+    });
+}
 
     // -----------------------------
     // SINGLE LABELS
