@@ -77,14 +77,40 @@ function renderLabels() {
 
     if (!data || !layoutData) return;
 
+    // -----------------------------
+    // X LABEL FIX (UPDATED)
+    // -----------------------------
+
     if (Array.isArray(data.X) && Array.isArray(layoutData.X)) {
-        data.X.forEach((value, i) => {
+
+        const count = Math.min(data.X.length, layoutData.X.length);
+
+        for (let i = 0; i < count; i++) {
+
+            const value = data.X[i];
             const pos = layoutData.X[i];
-            if (!pos) return;
+
+            if (!pos) continue;
 
             createLabel("X", value, pos);
-        });
+        }
+
+        // 🔥 DEBUG WARNING IF MISMATCH
+        if (data.X.length !== layoutData.X.length) {
+            console.warn(
+                `X mismatch in ${currentTCP} @ speed ${speed}`,
+                "data.X:", data.X.length,
+                "layout.X:", layoutData.X.length
+            );
+        }
+
+    } else {
+        console.warn("X not valid format:", data.X, layoutData.X);
     }
+
+    // -----------------------------
+    // SINGLE LABELS
+    // -----------------------------
 
     if (data.B && layoutData.B) createLabel("B", data.B, layoutData.B);
     if (data.C && layoutData.C) createLabel("C", data.C, layoutData.C);
@@ -132,13 +158,13 @@ rumbleCheckbox?.addEventListener("change", async function () {
 });
 
 // -----------------------------
-// INIT (CRITICAL ORDER)
+// INIT
 // -----------------------------
 
 async function init() {
     console.log("INIT START");
 
-    updateImage(); // ALWAYS FIRST
+    updateImage();
 
     await loadTCPData();
     await loadLayoutData();
