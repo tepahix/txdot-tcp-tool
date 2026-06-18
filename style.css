@@ -36,10 +36,10 @@ h1 {
 /* TCP image */
 .image-container img {
     width: 100%;
-    max-width: 950px;   /* keeps it controlled on desktop */
+    max-width: 1000px;
     height: auto;
     display: block;
-    border: 1px solid #ccc;
+    border: none;
     background: white;
 }
 
