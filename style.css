@@ -1,84 +1,56 @@
-/* --------------------
-   Base Layout
----------------------*/
-
 body {
     margin: 0;
     padding: 10px;
     font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+    background: #f5f5f5;
 }
 
+/* Header */
 h1 {
-    text-align: center;
-    margin-bottom: 10px;
+    text-align: left;
+    margin: 10px 0 15px 10px;
 }
 
-/* --------------------
-   Controls Layout
----------------------*/
-
-label {
-    display: block;
-    margin: 8px 0 4px;
-    text-align: center;
+/* Controls section (makes everything compact, not stacked too tall) */
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin: 0 10px 15px 10px;
 }
 
-select, input {
-    display: block;
-    margin: 0 auto 10px;
+/* Each control stays inline instead of stacking */
+.controls label {
+    margin: 0;
 }
 
-/* --------------------
-   Image Container
-   (CORE of your system)
----------------------*/
-
+/* Image area */
 .image-container {
     width: 100%;
-    max-width: 1000px;   /* keeps “sheet” size reasonable on desktop */
-    margin: 20px auto;   /* centers the TCP sheet */
-    position: relative;   /* IMPORTANT: required for future overlays */
+    display: flex;
+    justify-content: flex-start; /* not centered anymore */
+    margin: 0 10px;
 }
 
-/* TCP Image */
+/* TCP image */
 .image-container img {
     width: 100%;
+    max-width: 950px;   /* keeps it controlled on desktop */
     height: auto;
     display: block;
+    border: 1px solid #ccc;
+    background: white;
 }
 
-/* --------------------
-   FUTURE OVERLAY LAYER
-   (labels will go here later)
----------------------*/
-
-.label {
-    position: absolute;
-    font-size: 14px;
-    font-weight: bold;
-    color: red;
-    background: rgba(255, 255, 255, 0.7);
-    padding: 2px 4px;
-    border-radius: 3px;
-    pointer-events: none; /* prevents blocking clicks */
-}
-
-/* Example positions (we'll replace with dynamic JS later)
-.label-a { top: 20%; left: 30%; }
-.label-b { top: 40%; left: 60%; }
-*/
-
-/* --------------------
-   Mobile Optimization
----------------------*/
-
+/* Mobile tweak */
 @media (max-width: 600px) {
-    .image-container {
-        max-width: 100%;
+    .controls {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
-    .label {
-        font-size: 12px;
+    .image-container img {
+        max-width: 100%;
     }
 }
